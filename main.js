@@ -77,7 +77,7 @@ var app = http.createServer(function(request,response){
           <p>
             <input type="submit">
           </p>
-        </form>`);
+        </form>`); //if(pathname==='/'){if(queryData.id === undefined){ 이부분 복사
         response.writeHead(200);
         response.end(template);
       });
