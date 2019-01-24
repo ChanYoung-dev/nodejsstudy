@@ -13,9 +13,10 @@ function templateHTML(title, list, body){
   <body>
     <h1><a href="/">WEB</a></h1>
     ${list}
+    <a href="/create">create</a>
     ${body}
   </body>
-  </html>`;
+  </html>`; //create링크를 누르면 localhost:3000/create로 이동
 
 }
 
@@ -45,6 +46,7 @@ var app = http.createServer(function(request,response){
             response.end(template);
           });
       } else {
+        console.log(pathname);
         fs. readdir('./data',function(error,filelist){
         var list = '<ul>';
         var i=0;
@@ -62,7 +64,24 @@ var app = http.createServer(function(request,response){
         });
         });
       }
-    } else {
+    }else if(pathname === '/create'){
+      fs. readdir('./data',function(error,filelist){
+        console.log(pathname);
+        var title='WEB - create';
+        var list=templateList(filelist);
+        var template = templateHTML(title, list, `<form action="http://localhost:3000/process_create" method="post">
+          <p><input type="text" name="title" placeholder="title"></p>
+          <p>
+            <textarea name="description" placeholder="description"></textarea>
+          </p>
+          <p>
+            <input type="submit">
+          </p>
+        </form>`);
+        response.writeHead(200);
+        response.end(template);
+      });
+    }else {
       response.writeHead(404);
       response.end('Not found');
     }
