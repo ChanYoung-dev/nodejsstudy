@@ -4,7 +4,7 @@ var url = require('url');
 var qs = require('querystring');
  //url모듈사용
 
-function templateHTML(title, list, body){
+function templateHTML(title, list, body, control){
   return `
   <!doctype html>
   <html>
@@ -15,7 +15,7 @@ function templateHTML(title, list, body){
   <body>
     <h1><a href="/">WEB</a></h1>
     ${list}
-    <a href="/create">create</a>
+    ${control}
     ${body}
   </body>
   </html>`; //create링크를 누르면 localhost:3000/create로 이동
@@ -43,7 +43,7 @@ var app = http.createServer(function(request,response){
             var title='Welcome';
             var description='Hello,Node js';
             var list=templateList(filelist);
-            var template = templateHTML(title, list, `<h2>${title}</h2>${description}`);
+            var template = templateHTML(title, list, `<h2>${title}</h2>${description}`,`<a href="/create">create</a>`);
             response.writeHead(200);
             response.end(template);
           });
@@ -60,7 +60,7 @@ var app = http.createServer(function(request,response){
         fs.readFile(`data/${queryData.id}`,'utf8',function(err,description){
           var title=queryData.id;
           var list=templateList(filelist);
-          var template = templateHTML(title, list, `<h2>${title}</h2>${description}`);
+          var template = templateHTML(title, list, `<h2>${title}</h2>${description}`,`<a href="/create">create</a> <a href="/update?id=${title}">update</a>`);
           response.writeHead(200);
           response.end(template);
         });
@@ -79,7 +79,7 @@ var app = http.createServer(function(request,response){
           <p>
             <input type="submit">
           </p>
-        </form>`); //if(pathname==='/'){if(queryData.id === undefined){ 이부분 복사
+        </form>`, ''); //if(pathname==='/'){if(queryData.id === undefined){ 이부분 복사
         response.writeHead(200);
         response.end(template);
       });
