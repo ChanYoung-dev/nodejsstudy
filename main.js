@@ -112,8 +112,28 @@ var app = http.createServer(function(request,response){
           response.writeHead(200);
           response.end(template);
         });
-      }); //업데이트를 눌렀을시 뜨는 화면 작성코드
-    }
+      }); //업데이트를 눌렀을시 뜨는 화면 작성코드/ 변수전달을 위한 name='id'
+    } else if(pathname === '/update_process'){
+      var body = '';
+      request.on('data', function(data){
+          body = body + data;
+      });
+      request.on('end', function(){
+          var post = qs.parse(body);
+          var id = post.id; //id값도 받았었다 '/update'부분에
+          var title = post.title;
+          var description = post.description;
+          fs.rename(`data/${id}`,`data/${title}`, function(error){
+            fs.writeFile(`data/${title}`, description, 'utf8', function(err){
+            response.writeHead(302, {Location: `/?id=${title}`}); //200은 성공했다는 뜻
+            response.end('success');  //fs.writeFile~~ ->사용자가 if(pathname===update)에서의 입력한 title의 description  파일에 덮어쓰기
+          }); /*fs.rename-> if(pathname===update)에서 기존title을 id로 설정해놓앗고, 기존 id의 이름(title)을 사용자가 수정한 title로 이름을 바꾼다.
+          즉 javascript(기존title->id로 설정해놨음 if(pathname===update)에 ) -> javascript2(사용자가 입력란에 쓴것 (title))
+          a=b b=swap swap=c*/
+      })
+
+    });
+  }
     else {
       response.writeHead(404);
       response.end('Not found');
