@@ -53,7 +53,14 @@ var app = http.createServer(function(request,response){
           fs.readFile(`data/${queryData.id}`,'utf8',function(err,description){
             var title=queryData.id;
             var list=templateList(filelist);
-            var template = templateHTML(title, list, `<h2>${title}</h2>${description}`,`<a href="/create">create</a> <a href="/update?id=${title}">update</a>`);
+            var template = templateHTML(title, list, `<h2>${title}</h2>${description}`,
+              `<a href="/create">create</a>
+               <a href="/update?id=${title}">update</a>
+               <form action="delete_process" method="post">
+                <input type="hidden" name="id" value="${title}">
+                <input type="submit" value="delete">
+               </form>`);   /*<form action=" ~"  submit클릭시 ~주소로 이동
+               만약 method=post를 입력안했을시 http://~/delete_process?title=hi&descripton=~~ 주소로 보내진다*/
             response.writeHead(200);
             response.end(template);
           });
