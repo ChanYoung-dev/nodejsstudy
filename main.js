@@ -1,3 +1,4 @@
+//모듈 시
 var http = require('http');
 var fs = require('fs');
 var url = require('url'); //url모듈사용
@@ -40,6 +41,7 @@ var sanitizeHtml = require('sanitize-html');
 */
 
 var app = http.createServer(function(request,response){
+  //nodejs사이트에서 http api참고
     var _url = request.url;
     var queryData = url.parse(_url, true).query;
     var pathname = url.parse(_url,true).pathname;
