@@ -3,7 +3,7 @@ var fs = require('fs');
 var url = require('url'); //url모듈사용
 var qs = require('querystring');
 var template=require('./lib/template.js'); //모듈사용
-
+var path = require('path'); //경로
  //refactorying
  /*
  var template = {
@@ -66,7 +66,10 @@ var app = http.createServer(function(request,response){
       } else {
         console.log(pathname);
         fs. readdir('./data',function(error,filelist){
-          fs.readFile(`data/${queryData.id}`,'utf8',function(err,description){
+          var filteredID = path.parse(queryData.id).base;
+          //fs.readFile(`data/${queryData.id}`,'utf8',function(err,description){
+          fs.readFile(`data/${filteredID}`,'utf8',function(err,description){
+            //데이터안의 파일은 확인 된다,외부의 데이터는 찾지봇하게 차단
             var title=queryData.id;
             var list=template.List(filelist);
             var html = template.HTML(title, list, `<h2>${title}</h2>${description}`,
@@ -75,7 +78,11 @@ var app = http.createServer(function(request,response){
                <form action="delete_process" method="post">
                 <input type="hidden" name="id" value="${title}">
                 <input type="submit" value="delete">
-               </form>`);   /*<form action=" ~"  submit클릭시 ~주소로 이동
+               </form>`);   /*
+               delete를 누를시 delete_process로 가고 변수id에 들어간 값이
+               delete_process에서의 id로 넘어간다.
+               사용자가 건들지 못하게 하기위해 hidden을 시켜놓고 title값을 id에 넣어서 전달시킨다.
+               <form action=" ~"  submit클릭시 ~주소로 이동
                만약 method=post를 입력안했을시 http://~/delete_process?title=hi&descripton=~~ 주소로 보내진다*/
             response.writeHead(200);
             response.end(html);
@@ -115,7 +122,10 @@ var app = http.createServer(function(request,response){
       });
     } else if(pathname === '/update'){
       fs. readdir('./data',function(error,filelist){
-        fs.readFile(`data/${queryData.id}`,'utf8',function(err,description){
+        var filteredID = path.parse(queryData.id).base;
+        //fs.readFile(`data/${queryData.id}`,'utf8',function(err,description){
+        fs.readFile(`data/${filteredID}`,'utf8',function(err,description){
+          //데이터안의 파일은 확인 된다,외부의 데이터는 찾지봇하게 차단
           var title=queryData.id;
           var list=template.List(filelist);
           var html = template.HTML(title, list,
@@ -164,7 +174,8 @@ var app = http.createServer(function(request,response){
     request.on('end', function(){
         var post = qs.parse(body);
         var id = post.id;
-        fs.unlink(`data/${id}`, function(error){
+        var filteredID = path.parse(id).base;
+        fs.unlink(`data/${filteredID}`, function(error){
           response.writeHead(302, {Location: `/`});
           //redirection : 그냥페이지이동으로 튕겨주기
           response.end();
