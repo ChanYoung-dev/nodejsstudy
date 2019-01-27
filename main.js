@@ -1,41 +1,42 @@
 var http = require('http');
 var fs = require('fs');
-var url = require('url');
+var url = require('url'); //url모듈사용
 var qs = require('querystring');
- //url모듈사용
+var template=require('./lib/template.js'); //모듈사용
+
  //refactorying
-var template = {
-  HTML:function(title, list, body, control){
-    return `
-    <!doctype html>
-    <html>
-    <head>
-      <title>${title}</title>
-      <meta charset="utf-8">
-    </head>
-    <body>
-      <h1><a href="/">WEB</a></h1>
-      ${list}
-      ${control}
-      ${body}
-    </body>
-    </html>`; //create링크를 누르면 localhost:3000/create로 이동
+ /*
+ var template = {
+   HTML:function(title, list, body, control){
+     return `
+     <!doctype html>
+     <html>
+     <head>
+       <title>${title}</title>
+       <meta charset="utf-8">
+     </head>
+     <body>
+       <h1><a href="/">WEB</a></h1>
+       ${list}
+       ${control}
+       ${body}
+     </body>
+     </html>`; //create링크를 누르면 localhost:3000/create로 이동
 
-  },
-  List:function(filelist){
-    var list = '<ul>';
-    var i=0;
-    while(i<filelist.length){
-      list= list+`<li><a href="/?id=${filelist[i]}">${filelist[i]}</a></li>`;
-      i=i+1;
-    }
-    list = list + '</ul>';
-    return list;
-  }
+   },
+   List:function(filelist){
+     var list = '<ul>';
+     var i=0;
+     while(i<filelist.length){
+       list= list+`<li><a href="/?id=${filelist[i]}">${filelist[i]}</a></li>`;
+       i=i+1;
+     }
+     list = list + '</ul>';
+     return list;
+   }
 
-}
-
-
+ }
+*/
 
 var app = http.createServer(function(request,response){
     var _url = request.url;
