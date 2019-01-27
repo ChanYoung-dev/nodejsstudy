@@ -4,6 +4,7 @@ var url = require('url'); //url모듈사용
 var qs = require('querystring');
 var template=require('./lib/template.js'); //모듈사용
 var path = require('path'); //경로
+var sanitizeHtml = require('sanitize-html');
  //refactorying
  /*
  var template = {
@@ -71,12 +72,19 @@ var app = http.createServer(function(request,response){
           fs.readFile(`data/${filteredID}`,'utf8',function(err,description){
             //데이터안의 파일은 확인 된다,외부의 데이터는 찾지봇하게 차단
             var title=queryData.id;
+            var sanitizedTitle= sanitizeHtml(title);//소독작업
+            var sanitizeDescription = sanitizeHtml(description,
+              {
+                allowedTags:['h1']
+              }
+            ); //소독작업, 두번째인자는 허용작업
             var list=template.List(filelist);
-            var html = template.HTML(title, list, `<h2>${title}</h2>${description}`,
+            var html = template.HTML(sanitizedTitle, list,
+               `<h2>${sanitizedTitle}</h2>${sanitizeDescription}`,
               `<a href="/create">create</a>
-               <a href="/update?id=${title}">update</a>
+               <a href="/update?id=${sanitizedTitle}">update</a>
                <form action="delete_process" method="post">
-                <input type="hidden" name="id" value="${title}">
+                <input type="hidden" name="id" value="${sanitizedTitle}">
                 <input type="submit" value="delete">
                </form>`);   /*
                delete를 누를시 delete_process로 가고 변수id에 들어간 값이
